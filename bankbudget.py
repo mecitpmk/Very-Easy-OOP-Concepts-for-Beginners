@@ -30,6 +30,7 @@ class User:
     def deleteCoursefromTakenCourse(self,course_obj):
         self.budget += course_obj.credit*100
         self.registered_courses_list.remove(course_obj)
+        course_obj.registered_users.remove(self)
 
     def deleteUser(self):
         for taken_courses in self.registered_courses_list:
