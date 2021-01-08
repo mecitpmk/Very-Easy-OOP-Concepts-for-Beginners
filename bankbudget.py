@@ -27,10 +27,11 @@ class User:
             return True
         return False
     
-    def deleteCoursefromTakenCourse(self,course_obj):
+    def deleteCoursefromTakenCourse(self,course_obj,drop_specific=False):
         self.budget += course_obj.credit*100
         self.registered_courses_list.remove(course_obj)
-        course_obj.registered_users.remove(self)
+        if drop_specific:
+            course_obj.registered_users.remove(self)
 
     def deleteUser(self):
         for taken_courses in self.registered_courses_list:
@@ -41,6 +42,7 @@ class User:
         self.budget -= course_obj.credit*100
         self.registered_courses_list.append(course_obj)
         course_obj.registered_courses.append(self)
+
     def dropAllCourses(self):
         for courses in self.registered_courses_list:
             self.budget += courses.credit*100
@@ -62,7 +64,7 @@ class Course:
 
     def removeCourse(self):
         for users in self.registered_users:
-            users.deleteCourse(self)
+            users.deleteCoursefromTakenCourse(self)
             self.registered_users.remove(users)
         Course.courses_lists.remove(self)
     
@@ -100,6 +102,12 @@ class System:
     def deleteSpecificCourses(self,course_obj):
         course_obj.removeCourse()
     
+    def droppSpecificLesson(self,user,course_obj):
+        user.deleteCoursefromTakenCourse(course_obj,drop_specific=True)
+    
+    def dropUserfromLesson(self,course,user):
+        course.removeUserfromCourse(user)
+
     def createUser(self,id,password,budget):
         self.login_infos[id] = password
         return User(id,password,budget)
@@ -120,18 +128,3 @@ class System:
     
 
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
